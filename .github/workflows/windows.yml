@@ -7,22 +7,29 @@ on:
 jobs:
   build-win:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: shared-trips-electron
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Install deps
-        run: npm ci
+        run: npm install
+        working-directory: shared-trips-electron/electron-app
+
       - name: Build renderer + app
         run: npm run build
+        working-directory: shared-trips-electron/electron-app
+
       - name: Package .exe (NSIS)
         run: npm run dist
+        working-directory: shared-trips-electron/electron-app
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Shared-Trips-BG-Windows
-          path: electron-app/dist/**
+          path: shared-trips-electron/electron-app/dist/**
