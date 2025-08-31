@@ -16,15 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      # Без cache, за да не търси липсващи lock файлове
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: |
-            shared-trips-electron/electron-app/package-lock.json
-            shared-trips-electron/electron-app/renderer/package-lock.json
 
-      # Инсталации
       - name: Install deps (electron-app)
         run: npm i
 
@@ -32,11 +29,9 @@ jobs:
         working-directory: shared-trips-electron/electron-app/renderer
         run: npm i
 
-      # Rebuild на native модули (вкл. better-sqlite3)
       - name: Rebuild native deps
         run: npm run postinstall
 
-      # Билд на renderer + пакетиране
       - name: Build renderer + app
         run: npm run build
 
