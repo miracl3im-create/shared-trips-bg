@@ -11,46 +11,35 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # Диагностика: покажи структурата
-      - name: Show repo tree (root)
-        shell: pwsh
-        run: |
-          Write-Host "PWD:" (Get-Location)
-          Get-ChildItem -Force
-          Write-Host "---- shared-trips-electron ----"
-          if (Test-Path "shared-trips-electron") { Get-ChildItem -Force "shared-trips-electron" }
-          Write-Host "---- electron-app ----"
-          if (Test-Path "shared-trips-electron/electron-app") { Get-ChildItem -Force "shared-trips-electron/electron-app" }
-
-      - name: Check package.json exists
-        shell: pwsh
-        run: |
-          if (!(Test-Path "shared-trips-electron/electron-app/package.json")) {
-            Write-Error "package.json NOT FOUND at shared-trips-electron/electron-app"
-            exit 1
-          } else {
-            Write-Host "package.json FOUND at shared-trips-electron/electron-app"
-          }
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install deps
-        run: npm install
+      # 1) Инсталирай зависимостите на electron-app, но без да пуска postinstall
+      - name: Install deps (electron-app) without scripts
+        run: npm install --ignore-scripts
         working-directory: shared-trips-electron/electron-app
 
+      # 2) Инсталирай зависимостите в renderer (тук вече нормално)
+      - name: Install deps (renderer)
+        run: npm install
+        working-directory: shared-trips-electron/electron-app/renderer
+
+      # 3) Билд (ще зададе VITE_API_BASE през скрипта)
       - name: Build renderer + app
         run: npm run build
         working-directory: shared-trips-electron/electron-app
 
+      # 4) Пакетирай .exe (NSIS)
       - name: Package .exe (NSIS)
         run: npm run dist
         working-directory: shared-trips-electron/electron-app
 
+      # 5) Качи артефакта
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Shared-Trips-BG-Windows
           path: shared-trips-electron/electron-app/dist/**
+
