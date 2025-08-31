@@ -1,58 +1,49 @@
 {
   "name": "shared-trips-bg",
   "version": "1.0.0",
-  "description": "Shared Trips BG - Desktop (Electron)",
-  "main": "main.js",
-  "type": "module",
-  "author": "you",
+  "private": true,
+  "description": "Shared trips BG – Electron desktop app",
+  "main": "main/index.js",
+  "author": "",
   "license": "MIT",
   "scripts": {
-    "postinstall": "cd renderer && npm ci",
-    "dev": "concurrently -k \"npm:dev:*\"",
-    "dev:main": "cross-env NODE_ENV=development electron .",
-    "dev:renderer": "cd renderer && cross-env VITE_API_BASE=http://localhost:4777/api npm run dev",
-    "dev:server": "cross-env PORT=4777 node server/index.js",
+    "start": "electron .",
     "build": "cd renderer && cross-env VITE_API_BASE=http://localhost:4777/api npm run build",
-    "dist": "npm run build && cross-env NODE_ENV=production electron-builder -w nsis"
+    "dist": "npm run build && cross-env NODE_ENV=production electron-builder -w nsis",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "better-sqlite3": "^9.4.5",
-    "cors": "^2.8.5",
-    "electron-serve": "^2.0.0",
-    "express": "^4.19.2",
-    "helmet": "^7.1.0",
-    "socket.io": "^4.7.5"
+    "better-sqlite3": "^11.8.1",
+    "electron": "31.7.7"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "electron": "^31.3.1",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "24.13.3"
   },
   "build": {
-    "appId": "bg.shared.trips",
+    "appId": "bg.sharedtrips.app",
     "productName": "Shared Trips BG",
     "files": [
-      "main.js",
-      "preload.js",
-      "server/**",
+      "main/**",
+      "preload/**",
       "renderer/dist/**",
-      "assets/**",
+      "node_modules/**",
       "package.json"
     ],
-    "extraFiles": [
-      {
-        "from": "server/db",
-        "to": "resources/db",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": false
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
