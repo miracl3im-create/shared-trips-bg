@@ -11,27 +11,25 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # Диагностика: покажи структурата на репото
+      # Диагностика: покажи структурата
       - name: Show repo tree (root)
         shell: pwsh
         run: |
-          pwd
-          ls -la
-          echo "----"
-          if (Test-Path "shared-trips-electron") { ls -la shared-trips-electron }
-          echo "----"
-          if (Test-Path "shared-trips-electron/electron-app") { ls -la shared-trips-electron/electron-app }
+          Write-Host "PWD:" (Get-Location)
+          Get-ChildItem -Force
+          Write-Host "---- shared-trips-electron ----"
+          if (Test-Path "shared-trips-electron") { Get-ChildItem -Force "shared-trips-electron" }
+          Write-Host "---- electron-app ----"
+          if (Test-Path "shared-trips-electron/electron-app") { Get-ChildItem -Force "shared-trips-electron/electron-app" }
 
-      # Stop, ако няма package.json на очакваното място
       - name: Check package.json exists
         shell: pwsh
         run: |
           if (!(Test-Path "shared-trips-electron/electron-app/package.json")) {
-            echo "package.json NOT FOUND at shared-trips-electron/electron-app"
+            Write-Error "package.json NOT FOUND at shared-trips-electron/electron-app"
             exit 1
           } else {
-            echo "package.json FOUND"
-            type shared-trips-electron/electron-app/package.json
+            Write-Host "package.json FOUND at shared-trips-electron/electron-app"
           }
 
       - name: Setup Node
