@@ -13,11 +13,11 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "better-sqlite3": "^11.8.1",
-    "electron": "31.7.7"
+    "better-sqlite3": "^11.8.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "electron": "31.7.7",
     "electron-builder": "24.13.3"
   },
   "build": {
