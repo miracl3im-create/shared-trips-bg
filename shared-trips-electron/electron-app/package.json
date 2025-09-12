@@ -23,23 +23,33 @@
   "build": {
     "appId": "bg.sharedtrips.app",
     "productName": "Shared Trips BG",
+
     "files": [
-      "main/**",
-      "preload/**",
-      "renderer/dist/**",
-      "node_modules/**",
-      "package.json"
+      "!**/*.map",
+      "!**/test{,s}/**",
+      "!**/*.md",
+      "!**/.DS_Store",
+      "!**/.git/**",
+      "!**/.github/**",
+
+      { "from": "package.json", "to": "package.json" },
+      { "from": "node_modules", "to": "node_modules" },
+
+      { "from": "main", "to": "main", "filter": ["**/*"] },
+      { "from": "preload", "to": "preload", "filter": ["**/*"] },
+      { "from": "renderer/dist", "to": "renderer/dist", "filter": ["**/*"] }
     ],
+
     "directories": {
       "output": "dist",
       "buildResources": "build"
     },
+
     "win": {
-      "target": [
-        "nsis"
-      ],
+      "target": ["nsis"],
       "icon": "build/icon.ico"
     },
+
     "nsis": {
       "oneClick": false,
       "perMachine": false,
