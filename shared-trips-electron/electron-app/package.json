@@ -2,57 +2,25 @@
   "name": "shared-trips-bg",
   "version": "1.0.0",
   "private": true,
-  "description": "Shared trips BG – Electron desktop app",
-  "main": "main/index.js",
-  "author": "",
-  "license": "MIT",
+  "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "cross-env VITE_API_BASE=http://localhost:4777/api electron .",
     "build": "cd renderer && cross-env VITE_API_BASE=http://localhost:4777/api npm run build",
-    "dist": "npm run build && cross-env NODE_ENV=production electron-builder -w nsis",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "dist": "npm run build && cross-env NODE_ENV=production electron-builder -w nsis"
   },
+
   "dependencies": {
-    "better-sqlite3": "^11.8.1"
+    "better-sqlite3": "^11.8.1",
+    "electron-is-dev": "^2.0.0"
   },
+
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "electron": "31.7.7",
-    "electron-builder": "24.13.3"
-  },
-  "build": {
-    "appId": "bg.sharedtrips.app",
-    "productName": "Shared Trips BG",
-    "files": [
-      "!**/*.map",
-      "!**/test{,s}/**",
-      "!**/*.md",
-      "!**/.DS_Store",
-      "!**/.git/**",
-      "!**/.github/**",
-
-      { "from": "package.json", "to": "package.json" },
-      { "from": "node_modules", "to": "node_modules" },
-
-      { "from": "main", "to": "main", "filter": ["**/*"] },
-      { "from": "preload", "to": "preload", "filter": ["**/*"] },
-      { "from": "renderer/dist", "to": "renderer/dist", "filter": ["**/*"] }
-    ],
-    "asarUnpack": [
-      "**/*.node"
-    ],
-    "directories": {
-      "output": "dist",
-      "buildResources": "build"
-    },
-    "win": {
-      "target": ["nsis"],
-      "icon": "build/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true
-    }
+    "electron-builder": "^24.13.3",
+    "cross-env": "^7.0.3",
+    "vite": "^5.4.19"
   }
+
+  /* ако имаш "build": { ... } за electron-builder – остави го непроменен */
 }
